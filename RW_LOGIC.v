@@ -1,5 +1,5 @@
 module RW_LOGIC(cpu_data , RD, WR, A0,CS, 
-                ctrl_data, type , nr , ctrl_ready_to_write);
+                ctrl_data, type , nr );
 
   /*inputs and inouts from CPU to this block*/
   inout tri[7:0] cpu_data;  
@@ -10,7 +10,7 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
   output reg type;
   //output  Ack;
   output reg[1:0] nr;
-  input ctrl_ready_to_write;
+ // input ctrl_ready_to_write;
 
 
   /*internal flags to be modified later : tmr inshAllah :)*/ 

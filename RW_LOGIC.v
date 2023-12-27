@@ -1,4 +1,4 @@
-module RW_LOGIC(cpu_data , RD, WR, A0,CS, Ack, 
+module RW_LOGIC(cpu_data , RD, WR, A0,CS, 
                 ctrl_data, type , nr , ctrl_ready_to_write);
 
   /*inputs and inouts from CPU to this block*/

@@ -1,16 +1,16 @@
 module RW_LOGIC(cpu_data , RD, WR, A0,CS, 
-                ctrl_data, type , nr );
+                internal_bus_data, type , nr);
 
   /*inputs and inouts from CPU to this block*/
   inout tri[7:0] cpu_data;  
   input RD,WR,A0,CS;
 
   /*inputs and inouts on the internal bus*/ 
-  inout tri[7:0] ctrl_data;
+  inout tri[7:0] internal_bus_data;
   output reg type;
   //output  Ack;
   output reg[1:0] nr;
- // input ctrl_ready_to_write;
+  //input ctrl_ready_to_write;
 
 
   /*internal flags to be modified later : tmr inshAllah :)*/ 
@@ -25,12 +25,12 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
   /*in case of write cycle, assign the data coming from the 
    cpu to the data going to the control logic */
   assign wire_connector1 = ~WR? cpu_data : 8'bX;
-  assign ctrl_data = ~WR ? wire_connector1 : 8'bZ;
+  assign internal_bus_data = ~WR ? wire_connector1 : 8'bZ;
 
   /*in case of a read cycle, the control logic should alert 
    that it's ready now to write the required content to you 
    so you can pass it to the data bus buffer*/
-  assign wire_connector2 = ~RD ? ctrl_data : 8'bX;
+  assign wire_connector2 = ~RD ? internal_bus_data : 8'bX;
   assign cpu_data = ~RD ? wire_connector2 : 8'bZ;
   
   //assign Ack = ctrl_ready_to_write? 1:0; 

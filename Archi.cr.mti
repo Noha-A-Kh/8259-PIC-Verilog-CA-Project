@@ -1,0 +1,15 @@
+{C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v} {1 {vlog -work work {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v}
+Model Technology ModelSim ALTERA vlog 10.1b Compiler 2012.04 Apr 27 2012
+-- Compiling module IC_8259A
+
+Top level modules:
+	IC_8259A
+
+} {} {}} {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v} {1 {vlog -work work {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v}
+Model Technology ModelSim ALTERA vlog 10.1b Compiler 2012.04 Apr 27 2012
+-- Compiling module CASCADE_BLOCK
+
+Top level modules:
+	CASCADE_BLOCK
+
+} {} {}}

@@ -1,0 +1,65 @@
+m255
+K3
+13
+cModel Technology
+Z0 dC:\Users\Ahmed Hamed\Desktop\Verilog
+vCASCADE_BLOCK
+Z1 !s100 [^i?Ki:`fbTZab1KUDaYD3
+Z2 IdEDiLXoJ0m^6SE9ZQ6cN?1
+Z3 V9Vd[6oA1hFo>9GSKdh3Z[3
+Z4 dC:\Users\Ahmed Hamed\Desktop\Arcitecture project
+Z5 w1703459668
+Z6 8C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v
+Z7 FC:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v
+L0 1
+Z8 OV;L;10.1b;51
+r1
+31
+Z9 !s90 -reportprogress|300|-work|work|C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v|
+Z10 o-work work -O0
+Z11 n@c@a@s@c@a@d@e_@b@l@o@c@k
+!i10b 1
+!s85 0
+Z12 !s108 1703674061.713000
+Z13 !s107 C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v|
+!s101 -O0
+vIC_8259A
+Z14 I4K0OIa3I3:]aIb18XhdCm2
+Z15 Vnh6XaM]SbzzFeT=PkBdBO2
+R4
+Z16 w1703674051
+Z17 8C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v
+Z18 FC:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v
+L0 1
+R8
+r1
+31
+Z19 !s90 -reportprogress|300|-work|work|C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v|
+R10
+Z20 n@i@c_8259@a
+Z21 !s100 P@AI<eFT0f2QXHDWLW=?D2
+Z22 !s108 1703674061.652000
+Z23 !s107 C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v|
+!i10b 1
+!s85 0
+!s101 -O0
+vRW_LOGIC
+!i10b 1
+Z24 !s100 ;;dJ_cVJ41ZJzE==];a`a1
+Z25 IY796HQMEd^IeXf]]Ije^b1
+Z26 V`Cao22AR3?RYgG=^3bBMP2
+R4
+Z27 w1703509358
+Z28 8C:/Users/Ahmed Hamed/Desktop/Arcitecture project/RW_LOGIC.v
+Z29 FC:/Users/Ahmed Hamed/Desktop/Arcitecture project/RW_LOGIC.v
+L0 1
+R8
+r1
+!s85 0
+31
+!s108 1703674061.782000
+!s107 C:/Users/Ahmed Hamed/Desktop/Arcitecture project/RW_LOGIC.v|
+Z30 !s90 -reportprogress|300|-work|work|C:/Users/Ahmed Hamed/Desktop/Arcitecture project/RW_LOGIC.v|
+!s101 -O0
+R10
+Z31 n@r@w_@l@o@g@i@c

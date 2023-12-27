@@ -1,5 +1,5 @@
-module RW_LOGIC(cpu_data , RD, WR, A0,CS, 
-                ctrl_data, RW, type , nr , rst, ctrl_ready_to_write);
+module RW_LOGIC(cpu_data , RD, WR, A0,CS, Ack, 
+                ctrl_data, RW, type , nr , ctrl_ready_to_write);
 
   /*inputs and inouts from CPU to this block*/
   inout tri[7:0] cpu_data;  
@@ -7,7 +7,8 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
 
   /*inputs and inouts on the internal bus*/ 
   inout tri[7:0] ctrl_data;
-  output reg RW,type,rst;
+  output reg RW,type;
+  output  Ack;
   output reg[1:0] nr;
   input ctrl_ready_to_write;
 
@@ -32,6 +33,9 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
   assign wire_connector2 = ctrl_ready_to_write ? ctrl_data : 8'bX;
   assign cpu_data = ctrl_ready_to_write ? wire_connector2 : 8'bZ;
 
+  assign Ack = ctrl_ready_to_write? 1:0; 
+
+
   /*write cycle*/ 
   always @(negedge WR)
     begin 
@@ -53,27 +57,28 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
                     count = 2'b01;
                     //send to ctrl unit
                   end
-                if(A0 == 1)  //case of ocw1
-                  begin
-                    //OCW1_F =1;
-                    RW = 1;
-                    type = 0;
-                    nr = 2'b00;
-                  end
-                if(A0==0 & cpu_data[3]==0)  //case of ocw2
+
+                else if(A0==0 & cpu_data[3]==0)  //case of ocw2
                   begin
                     //OCW2_F =1;
                     RW=1;
                     type = 0;
                     nr = 2'b01;
                   end
-                if(A0 ==0 & cpu_data[3]==1) //case of ocw3
+                else if(A0 ==0 & cpu_data[3]==1) //case of ocw3
                   begin
                     //OCW3_F=1;
                     RW=1;
                     type=0;
                     nr=22'b10;
                   end  
+                else if(A0 == 1)  //case of ocw1
+                  begin
+                    //OCW1_F =1;
+                    RW = 1;
+                    type = 0;
+                    nr = 2'b00;
+                  end
               end 
             /////////////////// count =1
             2'b01:
@@ -118,8 +123,6 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
           endcase
         end
       ///////////////////////////////////////////////////// if #CS is High 
-      else 
-        rst=1;
 
     end 
 
@@ -128,8 +131,9 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
     begin
       if(~CS)
         RW=0;
-      else
-        rst=1;
     end 
 endmodule
+
+
+
 

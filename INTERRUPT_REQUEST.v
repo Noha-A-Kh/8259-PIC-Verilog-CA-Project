@@ -112,9 +112,6 @@ always @(negedge ISR[2],
       IRR_temp = 8'b0;
   end
   
-  
-  
-
 endmodule
 
 

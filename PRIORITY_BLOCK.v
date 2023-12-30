@@ -96,11 +96,57 @@ always @(negedge ISR[2],
   end
   
   /****************************************/
-  always @(IRs)
+  always @(posedge IRs[0])
   begin
     if (edge_or_level_triggered == 0)                  //Edge Triggered
-      IRR_temp = IRR_temp | IRs;  
+      IRR_temp[0] = IRR_temp[0] | IRs[0];  
   end
+  
+    always @(posedge IRs[1])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[1] = IRR_temp[1] | IRs[1];  
+  end
+  
+  
+    always @(posedge IRs[2])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[2] = IRR_temp[2] | IRs[2];  
+  end
+  
+  
+    always @(posedge IRs[3])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[3] = IRR_temp[3] | IRs[3];  
+  end
+  
+  
+    always @(posedge IRs[4])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[4] = IRR_temp[4] | IRs[4];  
+  end
+  
+    always @(posedge IRs[5])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[5] = IRR_temp[5] | IRs[5];  
+  end
+  
+    always @(posedge IRs[6])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[6] = IRR_temp[6] | IRs[6];  
+  end
+  
+  always @(posedge IRs[7])
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp[7] = IRR_temp[7] | IRs[7];  
+  end
+  
   
   always @(status)                                  //for reseting the sent IR
   begin                                   

@@ -117,41 +117,41 @@ endmodule
 
 module PRIORITY_BLOCK(
   input [7:0] IRs,
-  inout WRITE,            //1 -> write to cpu
-  //0 -> read from cpu
-  inout [2:0] MODE,
-  inout [7:0] DATA
+
+  input [2:0] CU_MODE,
+  input [7:0] CU_DATA,
+  input CU_WRITE,
+  
+  output[7:0] PRIORITY_DATA,
+  output[2:0] PRIORITY_MODE
 );
 
   //internal wires
   reg AEOI,
   edge_or_level_triggered,
   RST,
-  priority_mode =1;
-                                //1-> fully nested || 0->rotate
-  reg DATA_flag,
-  WRITE_flag,
-  MODE_flag;  
+  priority_mode = 1;
+                                //1-> fully nested || 0->rotate  
 
 
   reg EOICommand;                    //command or mode from ocw2 (bits 5, 6, 7)                              //ir level to be acted upon
-  reg [2:0] mode_temp;
   reg [3:0] chosen_index;
   reg [7:0] chosen;                  //chosen ir level from priority resolver
   wire [7:0] IRR;
   reg [7:0] rotatedIRR;
-  reg [7:0] data_temp;
   reg [7:0] IMR = 8'b0;
-  reg [7:0] ISR;
+  reg [7:0] ISR = 8'b0;
 
 
-  reg [15:0] status;
+  reg [15:0] status = 16'b0;
   
+  reg [7:0] data;
+  reg [2:0] mode;
   
-  assign DATA = DATA_flag ? data_temp : 8'bz;
-  assign WRITE = WRITE_flag ? 1'b0 : 1'bz;
-  assign MODE = MODE_flag ? mode_temp : 3'bz;
-
+  assign PRIORITY_DATA = data;
+  assign PRIORITY_MODE = mode;
+  
+  //
   /**********************************MODULES INSTANTIAITIONS**********************************/
 
 
@@ -162,7 +162,7 @@ module PRIORITY_BLOCK(
                                       .ISR(ISR), .IRR(IRR));
 
 
-  always @(posedge IRR[0],
+ /* always @(posedge IRR[0],
            posedge IRR[1],
            posedge IRR[2],
            posedge IRR[3],
@@ -172,24 +172,19 @@ module PRIORITY_BLOCK(
            posedge IRR[7])
     begin
       //send ack to control logic
-      DATA_flag = 1;
-      WRITE_flag = 1;
-      MODE_flag = 1;
-      mode_temp = 3'b110;
-      data_temp = (chosen_index-1) / 2; 
+      PRIORITY_MODE= 3'b110;
+      PRIORITY_DATA = (chosen_index-1) / 2; 
 
-    end
+    end*/
 
 
   always @(chosen)
     begin
-      DATA_flag = 1;
-      WRITE_flag = 1;
-      MODE_flag = 1;
-      mode_temp = 3'b110;
-      data_temp = chosen; 
+      mode = 3'b110;
+      data = (chosen_index-1) /2; 
     end
-
+    
+  
 always @(RST)
   begin
       ISR = 8'b0;
@@ -207,73 +202,52 @@ begin
   end
 end
 
-  always @(MODE, DATA)
+  always @(CU_MODE, CU_DATA, CU_WRITE)
     begin
 
-      DATA_flag = 0;
-      WRITE_flag = 0;
-      MODE_flag = 0;
-      case(MODE)
+      case(CU_MODE)
 
 
         3'b000:                             //mode = IRR
           begin
-            if(WRITE)
-              begin
-                DATA_flag = 1;
-                WRITE_flag = 1;
-                MODE_flag = 1;
-                data_temp = IRR;            //write irr to cpu
-                mode_temp = 3'b000;
-              end
+                data = IRR;            //write irr to cpu
+                mode = 3'b000;
           end
 
         3'b001:                             //mode = ISR
           begin                                     
-            if(WRITE) 
-              begin
-                DATA_flag = 1;
-                WRITE_flag = 1;
-                MODE_flag = 1;
-                mode_temp = 3'b001;
-                data_temp = ISR;             //write ISR to CPU
-              end
+
+                mode = 3'b001;
+                data = ISR;             //write ISR to CPU
           end
 
         3'b010:                              //mode = IMR
           begin
-            if(!WRITE)
-              begin
-                IMR = DATA;             //read IMR from CPU
-              end
-
+                IMR = CU_DATA;             //read IMR from CPU
           end
 
         3'b011:                              //mode = OCW2 (priority)
           begin
-          if(!WRITE)
-          begin
-          if(DATA[7] == 1)
+
+          if(CU_DATA[7] == 1)
             begin 
               priority_mode = 0;
             end  
-            else if(DATA[7] ==0)
+            else if(CU_DATA[7] ==0)
             begin 
               priority_mode = 1;
             end
-            if(DATA[5] == 1)
+            if(CU_DATA[5] == 1)
             begin
               EOICommand = 1;
-            end 
-          end                           
+            end                            
           end
         3'b100:                                         //ICWs
           begin
-          if(!WRITE)
-          begin
-            AEOI = DATA[0];                             //AEOI mode
-            edge_or_level_triggered = DATA[1];    
-          end      //Edge or Level triggered modes
+
+            AEOI = CU_DATA[0];                             //AEOI mode
+            edge_or_level_triggered = CU_DATA[1];    
+               //Edge or Level triggered modes
           end
 
         3'b101:                                         //handling (reserved for sending)
@@ -282,8 +256,7 @@ end
 
         3'b110:                                         //ACKNOWLEDGE (INTA)
           begin
-            if(!WRITE)
-            begin
+
               
             case({status[chosen_index], status[chosen_index-1]})
               2'b00:                                    //interrupt offline
@@ -295,11 +268,8 @@ end
               2'b01:                                    //ACK1
                 begin
                       //send handling mode 
-                      DATA_flag = 1;
-                      WRITE_flag = 1;
-                      MODE_flag = 1;
-                      mode_temp = 3'b101;
-                      data_temp = (chosen_index-1) / 2; 
+                      mode = 3'b101;
+                      data = (chosen_index-1) / 2; 
                   if(AEOI)                              //automtaic eoi
                     begin
                       ISR = ISR & ~chosen;
@@ -323,15 +293,12 @@ end
                 begin
                 end
             endcase
-            end
           end
 
         3'b111:
           begin     
-            if(!WRITE)
-            begin
               RST = ~RST;
-            end                          //Toggle RESET
+                          //Toggle RESET
           end
 
       endcase
@@ -340,9 +307,6 @@ end
   //always block for priority
   always @(IRR, ISR)
     begin
-      DATA_flag = 0;
-      WRITE_flag = 0;
-      MODE_flag = 0;
       if(priority_mode == 1)              //Fully Nested mode
         begin
 
@@ -437,9 +401,6 @@ end
            negedge ISR[4], negedge ISR[5],
            negedge ISR[6], negedge ISR[7])
     begin
-      DATA_flag = 0;
-      WRITE_flag = 0;
-      MODE_flag = 0;
       if (priority_mode == 0)                         //Rotation mode
         begin
           if (rotatedIRR[0] == 1)

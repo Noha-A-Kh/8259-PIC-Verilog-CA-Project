@@ -1,3 +1,120 @@
+module INTERRUPT_REQUEST(
+  input [7:0] IRs,
+  input edge_or_level_triggered,
+  input RST,
+  input [15:0] status,
+  input [7:0] chosen,
+  input [7:0] IMR,
+  input [7:0] ISR,
+  output [7:0] IRR
+);
+  
+  reg [7:0] IRR_temp = 8'b0;
+  assign IRR = (IRR_temp & (~IMR));
+  
+//1st pin
+  always @(negedge ISR[0],
+           posedge IRs[0])
+  begin
+    
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[0] != 0)
+        IRR_temp[0] = IRs[0];
+    end
+  end
+ 
+always @(negedge ISR[1],
+         posedge IRs[1])
+  begin
+    
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[1] != 0)
+        IRR_temp[1] = IRs[1];
+    end
+  end
+  
+always @(negedge ISR[2],
+         posedge IRs[2])
+  begin
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[2] != 0)
+        IRR_temp[2] = IRs[2];
+    end
+  end
+  
+  always @(negedge ISR[3],
+           posedge IRs[3])
+  begin
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[3] != 0)
+        IRR_temp[3] = IRs[3];
+    end
+  end
+  
+  always @(negedge ISR[4],
+           posedge IRs[4])
+  begin
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[4] != 0)
+        IRR_temp[4] = IRs[4];
+    end
+  end
+  
+  always @(negedge ISR[5],
+           posedge IRs[5])
+  begin
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[5] != 0)
+        IRR_temp[5] = IRs[5];
+    end
+  end
+  
+    always @(negedge ISR[6],
+           posedge IRs[6])
+  begin
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[6] != 0)
+        IRR_temp[6] = IRs[6];
+    end
+  end
+  
+    always @(negedge ISR[7],
+           posedge IRs[7])
+  begin
+    if(edge_or_level_triggered == 1)                  //Level Triggered
+    begin      
+      if (IRs[7] != 0)
+        IRR_temp[7] = IRs[7];
+    end
+  end
+  
+  /****************************************/
+  always @(IRs)
+  begin
+    if (edge_or_level_triggered == 0)                  //Edge Triggered
+      IRR_temp = IRR_temp | IRs;  
+  end
+  
+  always @(status)                                  //for reseting the sent IR
+  begin                                   
+      IRR_temp = IRR_temp & ~chosen;
+  end
+  
+  always @(RST)
+  begin
+      IRR_temp = 8'b0;
+  end
+  
+endmodule
+
+
 module PRIORITY_BLOCK(
   input [7:0] IRs,
   inout WRITE,            //1 -> write to cpu
@@ -10,20 +127,21 @@ module PRIORITY_BLOCK(
   reg AEOI,
   edge_or_level_triggered,
   RST,
-  priority_mode,                              //1-> fully nested || 0->rotate
-  DATA_flag,
+  priority_mode =1;
+                                //1-> fully nested || 0->rotate
+  reg DATA_flag,
   WRITE_flag,
-  MODE_flag,
-  IMR_flag;
+  MODE_flag;  
 
 
   reg EOICommand;                    //command or mode from ocw2 (bits 5, 6, 7)                              //ir level to be acted upon
   reg [2:0] mode_temp;
   reg [3:0] chosen_index;
   reg [7:0] chosen;                  //chosen ir level from priority resolver
-  wire [7:0] IRR, IMR;
+  wire [7:0] IRR;
   reg [7:0] rotatedIRR;
-  reg [7:0] data_temp, IMR_temp;
+  reg [7:0] data_temp;
+  reg [7:0] IMR = 8'b0;
   reg [7:0] ISR;
 
 
@@ -34,11 +152,8 @@ module PRIORITY_BLOCK(
   assign WRITE = WRITE_flag ? 1'b0 : 1'bz;
   assign MODE = MODE_flag ? mode_temp : 3'bz;
 
-  assign IMR = IMR_temp? IMR_flag: 1'bz;
-
   /**********************************MODULES INSTANTIAITIONS**********************************/
 
-  MASK mask_register (.MODE(MODE), .DATA(DATA), .RST(RST), .IMR(IMR));
 
   INTERRUPT_REQUEST request_register (.IRs(IRs),
                                       .edge_or_level_triggered(edge_or_level_triggered),
@@ -47,7 +162,14 @@ module PRIORITY_BLOCK(
                                       .ISR(ISR), .IRR(IRR));
 
 
-  always @(posedge IRR)
+  always @(posedge IRR[0],
+           posedge IRR[1],
+           posedge IRR[2],
+           posedge IRR[3],
+           posedge IRR[4],
+           posedge IRR[5],
+           posedge IRR[6],
+           posedge IRR[7])
     begin
       //send ack to control logic
       DATA_flag = 1;
@@ -71,6 +193,7 @@ module PRIORITY_BLOCK(
 always @(RST)
   begin
       ISR = 8'b0;
+      IMR = 8'b0;
   end
 
 always @(posedge EOICommand)
@@ -90,7 +213,6 @@ end
       DATA_flag = 0;
       WRITE_flag = 0;
       MODE_flag = 0;
-      IMR_flag =0;
       case(MODE)
 
 
@@ -122,30 +244,36 @@ end
           begin
             if(!WRITE)
               begin
-                IMR_temp = DATA;             //read IMR from CPU
+                IMR = DATA;             //read IMR from CPU
               end
 
           end
 
         3'b011:                              //mode = OCW2 (priority)
           begin
-          if(DATA[7] == 1)
-          begin 
-            priority_mode = 0;
-          end  
-          else if(DATA[7] ==0)
-          begin 
-            priority_mode = 1;
-          end
-          if(DATA[5] == 1)
+          if(!WRITE)
           begin
-            EOICommand = 1;
-          end                            
+          if(DATA[7] == 1)
+            begin 
+              priority_mode = 0;
+            end  
+            else if(DATA[7] ==0)
+            begin 
+              priority_mode = 1;
+            end
+            if(DATA[5] == 1)
+            begin
+              EOICommand = 1;
+            end 
+          end                           
           end
         3'b100:                                         //ICWs
           begin
+          if(!WRITE)
+          begin
             AEOI = DATA[0];                             //AEOI mode
-            edge_or_level_triggered = DATA[1];          //Edge or Level triggered modes
+            edge_or_level_triggered = DATA[1];    
+          end      //Edge or Level triggered modes
           end
 
         3'b101:                                         //handling (reserved for sending)
@@ -154,7 +282,9 @@ end
 
         3'b110:                                         //ACKNOWLEDGE (INTA)
           begin
-
+            if(!WRITE)
+            begin
+              
             case({status[chosen_index], status[chosen_index-1]})
               2'b00:                                    //interrupt offline
                 begin
@@ -193,12 +323,15 @@ end
                 begin
                 end
             endcase
-
+            end
           end
 
         3'b111:
           begin     
-            RST = ~RST;                          //Toggle RESET
+            if(!WRITE)
+            begin
+              RST = ~RST;
+            end                          //Toggle RESET
           end
 
       endcase
@@ -210,7 +343,6 @@ end
       DATA_flag = 0;
       WRITE_flag = 0;
       MODE_flag = 0;
-      IMR_flag =0;
       if(priority_mode == 1)              //Fully Nested mode
         begin
 
@@ -308,7 +440,6 @@ end
       DATA_flag = 0;
       WRITE_flag = 0;
       MODE_flag = 0;
-      IMR_flag =0;
       if (priority_mode == 0)                         //Rotation mode
         begin
           if (rotatedIRR[0] == 1)
@@ -362,3 +493,4 @@ end
         end
     end
 endmodule
+

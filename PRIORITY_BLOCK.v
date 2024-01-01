@@ -95,7 +95,7 @@ always @(negedge ISR[2],
     end
   end
   
-  /****************************************/
+  /**************/
   always @(posedge IRs[0])
   begin
     if (edge_or_level_triggered == 0)                  //Edge Triggered
@@ -191,14 +191,14 @@ module PRIORITY_BLOCK(
 
   reg [15:0] status = 16'b0;
   
-  reg [7:0] data;
-  reg [2:0] mode;
+  reg [7:0] data = 8'b0;
+  reg [2:0] mode = 3'b0;
   
   assign PRIORITY_DATA = data;
   assign PRIORITY_MODE = mode;
   
   //
-  /**********************************MODULES INSTANTIAITIONS**********************************/
+  /**********MODULES INSTANTIAITIONS**********/
 
 
   INTERRUPT_REQUEST request_register (.IRs(IRs),
@@ -208,27 +208,15 @@ module PRIORITY_BLOCK(
                                       .ISR(ISR), .IRR(IRR));
 
 
- /* always @(posedge IRR[0],
-           posedge IRR[1],
-           posedge IRR[2],
-           posedge IRR[3],
-           posedge IRR[4],
-           posedge IRR[5],
-           posedge IRR[6],
-           posedge IRR[7])
-    begin
-      //send ack to control logic
-      PRIORITY_MODE= 3'b110;
-      PRIORITY_DATA = (chosen_index-1) / 2; 
 
-    end*/
+  
 
 
-  always @(chosen)
+/*  always @(chosen)
     begin
       mode = 3'b110;
       data = (chosen_index-1) /2; 
-    end
+    end*/
     
   
 always @(RST)
@@ -351,7 +339,7 @@ end
     end
 
   //always block for priority
-  always @(IRR, ISR)
+  always @( IRR, ISR)
     begin
       if(priority_mode == 1)              //Fully Nested mode
         begin
@@ -499,5 +487,18 @@ end
             end
         end
     end
-endmodule
+     always @(posedge IRR[0],
+           posedge IRR[1],
+           posedge IRR[2],
+           posedge IRR[3],
+           posedge IRR[4],
+           posedge IRR[5],
+           posedge IRR[6],
+           posedge IRR[7])
+    begin
+      mode= 3'b110;
+      data = (chosen_index - 1) / 2; 
 
+    end
+ 
+endmodule

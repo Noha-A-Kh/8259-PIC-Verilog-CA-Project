@@ -95,7 +95,7 @@ always @(negedge ISR[2],
     end
   end
   
-  /**************/
+  /******/
   always @(posedge IRs[0])
   begin
     if (edge_or_level_triggered == 0)                  //Edge Triggered
@@ -198,7 +198,7 @@ module PRIORITY_BLOCK(
   assign PRIORITY_MODE = mode;
   
   //
-  /**********MODULES INSTANTIAITIONS**********/
+  /**MODULES INSTANTIAITIONS**/
 
 
   INTERRUPT_REQUEST request_register (.IRs(IRs),
@@ -218,12 +218,7 @@ module PRIORITY_BLOCK(
       data = (chosen_index-1) /2; 
     end*/
     
-  
-always @(RST)
-  begin
-      ISR = 8'b0;
-      IMR = 8'b0;
-  end
+
 
 always @(posedge EOICommand)
 begin
@@ -232,7 +227,7 @@ begin
   status[chosen_index] = 1'b0;
   status[chosen_index - 1] = 1'b0;
   ISR = ISR & ~chosen;
-  EOICommand = 0;
+ // EOICommand = 0;
   end
 end
 
@@ -278,10 +273,16 @@ end
           end
         3'b100:                                         //ICWs
           begin
-
+            ISR = 8'b0;
+            IMR = 8'b0;
+            status = 16'b0;
+            data = 8'b0;
+            mode = 3'b0;
             AEOI = CU_DATA[0];                             //AEOI mode
             edge_or_level_triggered = CU_DATA[1];    
                //Edge or Level triggered modes
+                 
+            
           end
 
         3'b101:                                         //handling (reserved for sending)
@@ -337,9 +338,15 @@ end
 
       endcase
     end
-
+always @(posedge ISR[0], posedge ISR[1],
+           posedge ISR[2], posedge ISR[3],
+           posedge ISR[4], posedge ISR[5],
+           posedge ISR[6], posedge ISR[7])
+begin
+  EOICommand = 0;
+end
   //always block for priority
-  always @( IRR, ISR)
+  always @( IRR, ISR,posedge EOICommand)
     begin
       if(priority_mode == 1)              //Fully Nested mode
         begin
@@ -433,7 +440,7 @@ end
   always @(negedge ISR[0], negedge ISR[1],
            negedge ISR[2], negedge ISR[3],
            negedge ISR[4], negedge ISR[5],
-           negedge ISR[6], negedge ISR[7])
+           negedge ISR[6], negedge ISR[7],posedge EOICommand)
     begin
       if (priority_mode == 0)                         //Rotation mode
         begin

@@ -233,7 +233,7 @@ end
 
   always @(CU_MODE, CU_DATA, CU_WRITE)
     begin
-
+      EOICommand = 0;
       case(CU_MODE)
 
 
@@ -338,13 +338,13 @@ end
 
       endcase
     end
-always @(posedge ISR[0], posedge ISR[1],
+/*always @(posedge ISR[0], posedge ISR[1],
            posedge ISR[2], posedge ISR[3],
            posedge ISR[4], posedge ISR[5],
            posedge ISR[6], posedge ISR[7])
 begin
   EOICommand = 0;
-end
+end*/
   //always block for priority
   always @( IRR, ISR,posedge EOICommand)
     begin

@@ -1,6 +1,6 @@
-module CASCADE_BLOCK (
+module CASCAD_BLOCK (
   input wire [2:0] SLAVE_ADRESS,  // Input wire for slave ID
-  inout wire SPEN,           // Input wire for slave enable signal
+  input wire SPEN,           // Input wire for slave enable signal
   output reg ACK,              // Output register for acknowledgment
   inout [2:0] CASCADE     // Inout wire for the cascaded bus
 );

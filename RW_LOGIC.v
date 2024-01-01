@@ -1,16 +1,18 @@
 module RW_LOGIC(cpu_data , RD, WR, A0,CS, 
-                ctrl_data, type , nr );
+                data_from_ctrl,data_to_ctrl, type , nr ,dummy);
 
   /*inputs and inouts from CPU to this block*/
   inout tri[7:0] cpu_data;  
   input RD,WR,A0,CS;
 
   /*inputs and inouts on the internal bus*/ 
-  inout tri[7:0] ctrl_data;
+  input[7:0] data_from_ctrl;
+  output[7:0] data_to_ctrl; 
   output reg type;
+  output reg dummy=0;
   //output  Ack;
   output reg[1:0] nr;
- // input ctrl_ready_to_write;
+  //input ctrl_ready_to_write;
 
 
   /*internal flags to be modified later : tmr inshAllah :)*/ 
@@ -19,26 +21,27 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
   reg [1:0] count = 2'b00;
 
   /*internal connectors for using the inout ports*/
-  wire[7:0] wire_connector1;
-  wire[7:0] wire_connector2;
+  //wire[7:0] wire_connector1;
+  //wire[7:0] wire_connector2;
 
   /*in case of write cycle, assign the data coming from the 
    cpu to the data going to the control logic */
-  assign wire_connector1 = ~WR? cpu_data : 8'bX;
-  assign ctrl_data = ~WR ? wire_connector1 : 8'bZ;
+  assign data_to_ctrl = ~WR? cpu_data : 8'bZ;
+  //assign internal_bus_data = ~WR ? wire_connector1 : 8'bZ;
 
   /*in case of a read cycle, the control logic should alert 
    that it's ready now to write the required content to you 
    so you can pass it to the data bus buffer*/
-  assign wire_connector2 = ~RD ? ctrl_data : 8'bX;
-  assign cpu_data = ~RD ? wire_connector2 : 8'bZ;
+  //assign wire_connector2 = ~RD ? internal_bus_data : 8'bX;
+  assign cpu_data = ~RD ? data_from_ctrl : 8'bZ;
   
   //assign Ack = ctrl_ready_to_write? 1:0; 
   
   
-  /write cycle/ 
+  /*write cycle*/ 
   always @(negedge WR)
     begin 
+      dummy=dummy^1;
       ////////////////////////////////////////////////////////// if #CS is Low
       if(~CS)
         begin

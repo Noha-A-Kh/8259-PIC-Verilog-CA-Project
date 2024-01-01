@@ -1,15 +1,23 @@
-{C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v} {1 {vlog -work work {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/IC_8259A.v}
+{C:/Users/Ahmed Hamed/Desktop/Arcitecture project/PRIORITY_BLOCK.v} {1 {vlog -work work {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/PRIORITY_BLOCK.v}
 Model Technology ModelSim ALTERA vlog 10.1b Compiler 2012.04 Apr 27 2012
--- Compiling module IC_8259A
+-- Compiling module INTERRUPT_REQUEST
+-- Compiling module PRIORITY_BLOCK
 
 Top level modules:
-	IC_8259A
+	PRIORITY_BLOCK
 
 } {} {}} {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v} {1 {vlog -work work {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/CASCAD_BLOCK.v}
 Model Technology ModelSim ALTERA vlog 10.1b Compiler 2012.04 Apr 27 2012
--- Compiling module CASCADE_BLOCK
+-- Compiling module CASCAD_BLOCK
 
 Top level modules:
-	CASCADE_BLOCK
+	CASCAD_BLOCK
+
+} {} {}} {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/RW_LOGIC.v} {1 {vlog -work work {C:/Users/Ahmed Hamed/Desktop/Arcitecture project/RW_LOGIC.v}
+Model Technology ModelSim ALTERA vlog 10.1b Compiler 2012.04 Apr 27 2012
+-- Compiling module RW_LOGIC
+
+Top level modules:
+	RW_LOGIC
 
 } {} {}}

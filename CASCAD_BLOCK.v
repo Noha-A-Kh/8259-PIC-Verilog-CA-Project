@@ -1,4 +1,4 @@
-module CASCADE_BLOCK (
+module CASCAD_BLOCK (
   input wire [2:0] SLAVE_ADRESS,  // Input wire for slave ID
   input wire SPEN,           // Input wire for slave enable signal
   output reg ACK,              // Output register for acknowledgment
@@ -25,5 +25,5 @@ module CASCADE_BLOCK (
   end
 
   // Assign CASCADE based on the mode
-  assign CASCADE = (SPEN == 1) ? slave_chosen : 3'bZ; 
+  assign CASCADE = (SPEN ) ? slave_chosen : 3'bZ; 
 endmodule

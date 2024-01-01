@@ -7,11 +7,10 @@ entity RW_LOGIC is
         WR              : in     vl_logic;
         A0              : in     vl_logic;
         CS              : in     vl_logic;
-        ctrl_data       : inout  vl_logic_vector(7 downto 0);
-        RW              : out    vl_logic;
+        data_from_ctrl  : in     vl_logic_vector(7 downto 0);
+        data_to_ctrl    : out    vl_logic_vector(7 downto 0);
         \type\          : out    vl_logic;
         nr              : out    vl_logic_vector(1 downto 0);
-        rst             : out    vl_logic;
-        ctrl_ready_to_write: in     vl_logic
+        dummy           : out    vl_logic
     );
 end RW_LOGIC;

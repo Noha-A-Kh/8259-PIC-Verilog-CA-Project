@@ -1,5 +1,4 @@
-# Computer Arcitecture Project 
-## 8259-PIC-Verilog 
+# Computer Arcitecture Project ,  8259-PIC-Verilog   
 ### Collaborators : 
 Issac Amin Sabry 2000251  
 Rana Amr AbdelNaby 2000256  

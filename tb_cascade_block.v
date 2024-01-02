@@ -1,4 +1,6 @@
-reg [2:0] SLAVE_ADRESS;  // Testbench input: slave ID
+`timescale 1ns / 1ps
+module tb_cascade_block();
+  reg [2:0] SLAVE_ADRESS;  // Testbench input: slave ID
   reg SPEN;               // Testbench input: slave enable signal
   wire ACK;               // Testbench output: acknowledgment
   reg flag=0;

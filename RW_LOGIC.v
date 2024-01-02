@@ -1,44 +1,44 @@
 module RW_LOGIC(cpu_data , RD, WR, A0,CS, 
-                internal_bus_data, type , nr);
+                data_from_ctrl,data_to_ctrl, type , nr ,dummy);
 
   /*inputs and inouts from CPU to this block*/
   inout tri[7:0] cpu_data;  
   input RD,WR,A0,CS;
 
-  /*inputs and inouts on the internal bus*/ 
-  inout tri[7:0] internal_bus_data;
+  /*inputs and outputs on the internal bus*/ 
+  input[7:0] data_from_ctrl;
+  output[7:0] data_to_ctrl; 
   output reg type;
-  //output  Ack;
+  output reg dummy=0;
   output reg[1:0] nr;
   //input ctrl_ready_to_write;
 
 
-  /*internal flags to be modified later : tmr inshAllah :)*/ 
+  /*internal flags*/ 
   //reg ICW1_F , ICW2_F, ICW3_F, ICW4_F, OCW1_F , OCW2_F , OCW3_F;
   reg ICW4_exists = 0;
-  reg [1:0] count = 2'b00;
+  reg [1:0] count = 2'b00;  //indicates the state 
 
   /*internal connectors for using the inout ports*/
-  wire[7:0] wire_connector1;
-  wire[7:0] wire_connector2;
+  //wire[7:0] wire_connector1;
+  //wire[7:0] wire_connector2;
 
   /*in case of write cycle, assign the data coming from the 
    cpu to the data going to the control logic */
-  assign wire_connector1 = ~WR? cpu_data : 8'bX;
-  assign internal_bus_data = ~WR ? wire_connector1 : 8'bZ;
+  assign data_to_ctrl = ~WR? cpu_data : 8'bZ;
+  //assign internal_bus_data = ~WR ? wire_connector1 : 8'bZ;
 
-  /*in case of a read cycle, the control logic should alert 
-   that it's ready now to write the required content to you 
-   so you can pass it to the data bus buffer*/
-  assign wire_connector2 = ~RD ? internal_bus_data : 8'bX;
-  assign cpu_data = ~RD ? wire_connector2 : 8'bZ;
+  /*in case of a read cycle*/
+  //assign wire_connector2 = ~RD ? internal_bus_data : 8'bX;
+  assign cpu_data = ~RD ? data_from_ctrl : 8'bZ;
   
   //assign Ack = ctrl_ready_to_write? 1:0; 
   
   
-  /*write cycle*/ 
+  /write cycle/ 
   always @(negedge WR)
     begin 
+      dummy=dummy^1;
       ////////////////////////////////////////////////////////// if #CS is Low
       if(~CS)
         begin
@@ -134,7 +134,3 @@ module RW_LOGIC(cpu_data , RD, WR, A0,CS,
         RW=0;
     end */ 
 endmodule
-
-
-
-
